@@ -77,15 +77,15 @@ def msg_callback(msg):
     if "zeige" in text_lower:
         if "mac" in text_lower:
             bot.sendMessage(telegram_uid, "Insgesamt wurden {} Mac-Adressen erfasst: {}".format(
-                len(macs), ", ".join(macs)[:3500]
+                len(macs), ", ".join(unicode_decode(macs))[:3500]
             ))
         if "ssid" in text_lower:
             bot.sendMessage(telegram_uid, "Insgesamt wurden {} SSIDs erfasst: {}".format(
-                len(ssids), ", ".join(ssids)[:3500]
+                len(ssids), ", ".join(unicode_decode(ssids))[:3500]
             ))
         if "hersteller" in text_lower or "vendor" in text_lower:
             bot.sendMessage(telegram_uid, "Insgesamt wurden {} Hersteller erfasst: {}".format(
-                len(vendors), ", ".join(vendors)[:3500]
+                len(vendors), ", ".join(unicode_decode(vendors))[:3500]
             ))
 
 
