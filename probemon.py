@@ -11,7 +11,7 @@ from telepot.loop import MessageLoop
 from filemanagement import *
 
 
-def unicode_decode(lst):
+def unicode_decode_set(lst):
     output = set()
     for e in lst:
         try:
@@ -21,10 +21,10 @@ def unicode_decode(lst):
     return output
 
 
-ssids = unicode_decode(load_ssids())
-macs = unicode_decode(load_macs())
-vendors = unicode_decode(load_vendors())
-macs_to_track = unicode_decode(load_macs_to_track())
+ssids = unicode_decode_set(load_ssids())
+macs = unicode_decode_set(load_macs())
+vendors = unicode_decode_set(load_vendors())
+macs_to_track = unicode_decode_set(load_macs_to_track())
 macs_last_seen = load_macs_last_seen()
 
 interface = None
@@ -77,15 +77,15 @@ def msg_callback(msg):
     if "zeige" in text_lower:
         if "mac" in text_lower:
             bot.sendMessage(telegram_uid, "Insgesamt wurden {} Mac-Adressen erfasst: {}".format(
-                len(macs), ", ".join(unicode_decode(macs))[:3500]
+                len(macs), ", ".join(unicode_decode_set(macs))[:3500]
             ))
         if "ssid" in text_lower:
             bot.sendMessage(telegram_uid, "Insgesamt wurden {} SSIDs erfasst: {}".format(
-                len(ssids), ", ".join(unicode_decode(ssids))[:3500]
+                len(ssids), ", ".join(unicode_decode_set(ssids))[:3500]
             ))
         if "hersteller" in text_lower or "vendor" in text_lower:
             bot.sendMessage(telegram_uid, "Insgesamt wurden {} Hersteller erfasst: {}".format(
-                len(vendors), ", ".join(unicode_decode(vendors))[:3500]
+                len(vendors), ", ".join(unicode_decode_set(vendors))[:3500]
             ))
 
 
@@ -115,7 +115,10 @@ def packet_callback(packet):
     except netaddr.core.NotRegisteredError:
         vendor = 'unknown'
 
-    ssid = packet.info
+    try:
+        ssid = unicode(packet.info)
+    except UnicodeDecodeError:
+        return
 
     if ssid and ssid not in ssids:
         ssids.add(ssid)
